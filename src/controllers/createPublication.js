@@ -2,6 +2,7 @@ const multer = require('multer');
 const path = require('path');
 const moment = require('moment');
 const connection = require('../model/model');
+
 const storage = multer.diskStorage({
     destination: path.join(__dirname, "../../images"),
     filename: (req, file, cb) => {
@@ -15,6 +16,7 @@ const moveImage = load.single('image');
 const createPublication = (req, res) => {
     const { originalname } = req.file;
     const { data } = req.body;
+    console.log(data);
     const { 
         category, 
         nameClient, 
@@ -28,6 +30,7 @@ const createPublication = (req, res) => {
         myStudens 
     } = JSON.parse(data);
     const idPublication = moment().unix();
+    console.log(idPublication)
     const sqlTablePublication = "CALL createPublication(?,?,?,?,?,?,?,?)"; 
     connection.query(sqlTablePublication, [
         idPublication,
@@ -61,6 +64,7 @@ const createPublication = (req, res) => {
             res.status(500).json({message:"Error del servidor networks", err});
             return false;
         }
+        console.log("networks saves: "+idPublication)
     })
     const resultMoreInfo = moreinfo.map(info => {
         return Object.values({
@@ -77,6 +81,7 @@ const createPublication = (req, res) => {
             res.status(500).json({message:"Error del servidor moreInfo", err});
             return false;
         }
+        console.log("moreInfo: "+idPublication)
     })
     const resultMySpecia = mySpecialits.map(specialit => {
         return Object.values({
@@ -93,6 +98,7 @@ const createPublication = (req, res) => {
             res.status(500).json({message:"Error del servidor specialtyStudens", err});
             return false;
         }
+        console.log("specialty: "+idPublication)
     })
     const resultStudens = myStudens.map(myStuden => {
         return Object.values({
@@ -108,7 +114,9 @@ const createPublication = (req, res) => {
             res.status(500).json({message:"Error del servidor specialtyStudens, studens", err});
             return false;
         }
+        console.log("Studens: "+idPublication)
     })
+    
     res.status(200).json({message:"publication created"});
 }
 
